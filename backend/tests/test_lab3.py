@@ -53,7 +53,7 @@ async def test_wrong_password_failure():
         pass
 
 def test_padding_logic():
-    password = "test"
+    password = "Temporary_Test_Pass_99!_@#"
     data = b"123"
     
     loop = asyncio.new_event_loop()
