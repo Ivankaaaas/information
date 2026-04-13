@@ -49,3 +49,55 @@ async def test_lab5_full_cycle():
         files={"file": (file_name, io.BytesIO(test_content + b" corrupted"))}
     )
     assert response_verify_fail.json()["is_valid"] is False
+
+@pytest.mark.asyncio
+async def test_sign_with_invalid_key():
+    invalid_key = "NOT_A_REAL_KEY"
+    file_content = b"Some data"
+    
+    response = client.post(
+        "/api/v1/lab5/sign",
+        data={"private_key": invalid_key},
+        files={"file": ("test.txt", io.BytesIO(file_content))}
+    )
+    assert response.status_code != 200
+
+@pytest.mark.asyncio
+async def test_empty_file_signature():
+    keys = client.get("/api/v1/lab5/keys/generate").json()
+    
+    response_sign = client.post(
+        "/api/v1/lab5/sign",
+        data={"private_key": keys["private_key"]},
+        files={"file": ("empty.txt", io.BytesIO(b""))}
+    )
+    assert response_sign.status_code == 200
+    signature = response_sign.json()["signature_hex"]
+    
+    response_verify = client.post(
+        "/api/v1/lab5/verify",
+        data={
+            "signature_hex": signature,
+            "public_key": keys["public_key"]
+        },
+        files={"file": ("empty.txt", io.BytesIO(b""))}
+    )
+    assert response_verify.json()["is_valid"] is True
+
+@pytest.mark.asyncio
+async def test_verify_with_wrong_signature():
+    keys = client.get("/api/v1/lab5/keys/generate").json()
+    content = b"Original content"
+    
+    fake_signature = "a" * 128 
+    
+    response = client.post(
+        "/api/v1/lab5/verify",
+        data={
+            "signature_hex": fake_signature,
+            "public_key": keys["public_key"]
+        },
+        files={"file": ("test.txt", io.BytesIO(content))}
+    )
+    assert response.status_code == 200
+    assert response.json()["is_valid"] is False
