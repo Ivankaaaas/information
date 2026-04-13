@@ -15,7 +15,7 @@ class Lab3Service:
         
         return result, execution_time
 
-    async def encrypt_file(self, content: bytes, password: str) -> bytes:
+    def encrypt_file(self, content: bytes, password: str) -> bytes:
         key = bytes.fromhex(EncryptionUtils.MD5(password))[:self.b]
         S = EncryptionUtils.rc5_key_expansion(key, self.w, self.r)
         
@@ -37,7 +37,7 @@ class Lab3Service:
             
         return bytes(res)
 
-    async def decrypt_file(self, encrypted_content: bytes, password: str) -> bytes:
+    def decrypt_file(self, encrypted_content: bytes, password: str) -> bytes:
         key = bytes.fromhex(EncryptionUtils.MD5(password))[:self.b]
         S = EncryptionUtils.rc5_key_expansion(key, self.w, self.r)
 

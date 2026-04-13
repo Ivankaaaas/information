@@ -1,5 +1,6 @@
 import pytest
 import asyncio
+import os
 from app.utils.encryption_utils import EncryptionUtils
 from app.services.lab3_services import lab3_service
 
@@ -26,7 +27,7 @@ def test_rc5_block_consistency():
 
 @pytest.mark.asyncio
 async def test_full_encryption_decryption_cycle():
-    password = "MySecurePassword123"
+    password = os.getenv("password")
     original_data = b"Hello, this is a secret message for Lab 3 testing!"
     
     encrypted_data = await lab3_service.encrypt_file(original_data, password)
@@ -40,7 +41,7 @@ async def test_full_encryption_decryption_cycle():
 
 @pytest.mark.asyncio
 async def test_wrong_password_failure():
-    password = "correct_password"
+    password = os.getenv("correct_password")
     wrong_password = "wrong_password"
     original_data = b"Top secret information"
     
@@ -53,7 +54,9 @@ async def test_wrong_password_failure():
         pass
 
 def test_padding_logic():
-    password = "Temporary_Test_Pass_99!_@#"
+    username = os.getenv("username")
+    password = os.getenv("password")
+    usernamePassword = 'user=%s&password=%s' % (username, password)
     data = b"123"
     
     loop = asyncio.new_event_loop()

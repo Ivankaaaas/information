@@ -29,7 +29,7 @@ class Lab4Service:
 
         return private_pem, public_pem
 
-    async def encrypt_rsa(self, data: bytes, public_key_pem: bytes):
+    def encrypt_rsa(self, data: bytes, public_key_pem: bytes):
         public_key = serialization.load_pem_public_key(public_key_pem)
         start_time = time.perf_counter()
         

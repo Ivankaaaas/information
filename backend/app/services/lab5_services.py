@@ -21,7 +21,7 @@ class Lab5Service:
         
         return private_pem, public_pem
 
-    async def sign_data(self, data: bytes, private_key_pem: bytes):
+    def sign_data(self, data: bytes, private_key_pem: bytes):
         start_time = time.time()
         
         private_key = serialization.load_pem_private_key(private_key_pem, password=None)
@@ -31,7 +31,7 @@ class Lab5Service:
         duration = time.time() - start_time
         return signature.hex(), duration
 
-    async def verify_signature(self, data: bytes, signature_hex: bytes, public_key_pem: bytes):
+    def verify_signature(self, data: bytes, signature_hex: bytes, public_key_pem: bytes):
         start_time = time.time()
         try:
             public_key = serialization.load_pem_public_key(public_key_pem)
